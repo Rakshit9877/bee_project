@@ -1,0 +1,5 @@
+newpro/
+generate_team_history.sh
+.DS_Store
+__pycache__/
+*.pyc
