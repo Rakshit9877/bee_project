@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | MedQueue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.jpg">
+</head>
+<body>
+
+  <div class="app-container">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand">
+          <img src="assets/logo.jpg" alt="MedQueue Logo" class="logo-icon-img">
+          <div class="brand-text">
+            <span class="brand-main">MedQueue</span>
+            <span class="brand-sub">Priority Triage System</span>
+          </div>
+        </a>
+        <nav class="nav-links">
+          <a href="signup.html" class="nav-link">Don't have an account? Sign up</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-content auth-wrapper">
+      <div class="card-panel auth-card no-hover">
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h2 style="font-size: 2rem; margin-bottom: 8px;">Welcome back</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Sign in to access your account</p>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label" for="username">Username</label>
+            <input type="text" id="username" class="form-input" placeholder="Enter your username" autocomplete="username" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" autocomplete="current-password" required>
+          </div>
+
+          <!-- Access code field for staff accounts -->
+          <div class="form-group" id="access-code-group" style="display:none;">
+            <label class="form-label" for="access-code">Staff Access Code</label>
+            <input type="text" id="access-code" class="form-input" placeholder="6-character access code" maxlength="6" style="text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700;">
+            <p class="form-hint">Staff accounts require the access code provided during registration.</p>
+          </div>
+
+          <div id="login-msg" style="margin-bottom:15px;font-size:0.9rem;font-weight:600;display:none;"></div>
+
+          <button type="submit" class="btn btn-primary" id="login-btn" style="width: 100%;">Sign In</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-muted);">
+          New here? <a href="signup.html" style="color: var(--primary); font-weight: 700;">Create an account</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/page-login.js"></script>
+</body>
+</html>

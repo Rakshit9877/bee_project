@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | MedQueue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.jpg">
+</head>
+<body>
+
+  <div class="app-container">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand">
+          <img src="assets/logo.jpg" alt="MedQueue Logo" class="logo-icon-img">
+          <div class="brand-text">
+            <span class="brand-main">MedQueue</span>
+            <span class="brand-sub">Priority Triage System</span>
+          </div>
+        </a>
+        <nav class="nav-links">
+          <a href="login.html" class="nav-link">Already have an account? Sign in</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-content auth-wrapper">
+      <div class="card-panel auth-card wide no-hover">
+        
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h2 style="font-size: 2rem; margin-bottom: 8px;">Create your account</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Choose your role to get started</p>
+        </div>
+
+        <form id="signup-form">
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name</label>
+            <input type="text" id="name" class="form-input" placeholder="Your full name" autocomplete="name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="username">Username</label>
+            <input type="text" id="username" class="form-input" placeholder="Choose a username" autocomplete="username" required>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="password">Password</label>
+              <input type="password" id="password" class="form-input" placeholder="Min. 6 characters" required minlength="6">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="confirm-password">Confirm Password</label>
+              <input type="password" id="confirm-password" class="form-input" placeholder="Repeat password" required minlength="6">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="form-label">I am a...</label>
+            <div class="role-toggle" id="role-toggle">
+              <label class="role-option selected" id="role-patient-card">
+                <input type="radio" name="role" value="patient" checked>
+                <div class="role-icon" style="background: var(--primary);">P</div>
+                <div style="font-weight: 700; color: var(--text-dark);">Patient</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Check in and track position</div>
+              </label>
+              <label class="role-option" id="role-staff-card">
+                <input type="radio" name="role" value="staff">
+                <div class="role-icon" style="background: var(--accent-coral);">S</div>
+                <div style="font-weight: 700; color: var(--text-dark);">Staff</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Manage the queue</div>
+              </label>
+            </div>
+          </div>
+
+          <div id="signup-msg" style="margin-bottom:10px;font-size:0.9rem;font-weight:600;display:none;"></div>
+
+          <button type="submit" class="btn btn-primary" id="signup-btn" style="width: 100%; margin-top: 10px;">Create Account</button>
+        </form>
+
+        <!-- Access code modal (shown after staff signup) -->
+        <div id="access-code-modal" class="modal-overlay hidden">
+          <div class="card-panel no-hover" style="max-width: 460px; text-align: center;">
+            <div class="feature-icon coral" style="margin: 0 auto 16px auto;">!</div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Save Your Access Code</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+              You will need this code every time you sign in. Store it somewhere safe.
+            </p>
+            <div class="access-code-display">
+              <div style="font-size: 0.8rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em;">Your Staff Access Code</div>
+              <div class="access-code-value" id="modal-access-code">------</div>
+            </div>
+            <div class="warning-banner" style="margin-top: 20px;">
+              <span class="warning-dot"></span>
+              <span>Do not share this code. If lost, you can regenerate it from your profile page, but you will need to be logged in first.</span>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 24px;" id="access-code-continue">I've saved my code — Continue to Login</button>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-muted);">
+          Already have an account? <a href="login.html" style="color: var(--primary); font-weight: 700;">Sign in</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/page-signup.js"></script>
+</body>
+</html>
