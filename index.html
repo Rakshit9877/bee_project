@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedQueue | Smart Triage Priority Queue</title>
+  <meta name="description" content="An algorithmic front-desk priority queue that uses weighted scoring and insertion sort to order patients by self-reported symptom urgency.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.jpg">
+</head>
+<body>
+
+  <div class="app-container">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand">
+          <img src="assets/logo.jpg" alt="MedQueue Logo" class="logo-icon-img">
+          <div class="brand-text">
+            <span class="brand-main">MedQueue</span>
+            <span class="brand-sub">Priority Triage System</span>
+          </div>
+        </a>
+        <nav class="nav-links" id="header-nav">
+          <a href="lookup.html" class="nav-link">Track Ticket</a>
+          <a href="login.html" class="nav-link">Login</a>
+          <a href="signup.html" class="btn btn-primary btn-sm">Get Started</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section style="padding: 60px 0 60px 0;">
+        <div class="container" style="text-align: center; max-width: 800px;">
+          <h1 style="font-size: 3.6rem; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 20px;">
+            Smart Triage,<br>
+            <span style="display: inline-block; border: 2px solid var(--primary-light); border-radius: 50px; padding: 0 20px; color: var(--primary); font-style: italic;">Zero</span> Waiting Chaos
+          </h1>
+
+          <p style="font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; margin: 0 auto 40px auto; max-width: 600px;">
+            A front-desk check-in tool that uses a weighted scoring algorithm and a hand-crafted insertion sort to place the most urgent patients first — fairly and transparently.
+          </p>
+
+          <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;" id="cta-row">
+            <a href="signup.html" class="btn btn-coral btn-lg">Create Account</a>
+            <a href="login.html" class="btn btn-outline btn-lg">Sign In</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section class="container" style="margin-bottom: 60px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+          <div class="card-panel">
+            <div class="feature-icon purple">W</div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Weighted Scoring</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Each symptom carries a clinical weight. Severity slider, duration, and red flags all feed into a single triage score.</p>
+          </div>
+          <div class="card-panel">
+            <div class="feature-icon coral">S</div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Insertion Sort Queue</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">A hand-written insertion sort keeps the queue ordered in O(n) time on each new arrival, with first-come-first-served tie-breaking.</p>
+          </div>
+          <div class="card-panel">
+            <div class="feature-icon green">L</div>
+            <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Live Dashboard</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">The staff view auto-refreshes every 3 seconds and listens for cross-tab storage events to stay in sync.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works -->
+      <section class="container" style="margin-bottom: 60px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <h2 style="font-size: 2.2rem; margin-bottom: 12px;">How It Works</h2>
+          <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto;">From check-in to consultation in three simple steps.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+          <div class="card-panel" style="text-align: center;">
+            <div class="feature-icon amber" style="margin: 0 auto 16px auto;">1</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Report Symptoms</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Select what you are experiencing, rate the severity, and indicate any red flags.</p>
+          </div>
+          <div class="card-panel" style="text-align: center;">
+            <div class="feature-icon purple" style="margin: 0 auto 16px auto;">2</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Get Your Score</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">The algorithm computes a priority score and inserts you into the sorted queue. You receive a ticket number.</p>
+          </div>
+          <div class="card-panel" style="text-align: center;">
+            <div class="feature-icon green" style="margin: 0 auto 16px auto;">3</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Track Your Position</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Watch your live queue position. Staff calls patients in priority order from their dashboard.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.setupHeader();
+      document.getElementById('site-footer').innerHTML = UI.getFooterHTML();
+
+      const user = Auth.getCurrentUser();
+      if (user) {
+        const cta = document.getElementById('cta-row');
+        const dest = user.role === 'staff' ? 'dashboard.html' : 'checkin.html';
+        const label = user.role === 'staff' ? 'Dashboard' : 'Check-in';
+        cta.innerHTML = `<a href="${dest}" class="btn btn-primary btn-lg">Go to ${label}</a>`;
+      }
+    });
+  </script>
+</body>
+</html>
