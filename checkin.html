@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check In | MedQueue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.jpg">
+</head>
+<body>
+
+  <div class="app-container">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand">
+          <img src="assets/logo.jpg" alt="MedQueue Logo" class="logo-icon-img">
+          <div class="brand-text">
+            <span class="brand-main">MedQueue</span>
+            <span class="brand-sub">Priority Triage System</span>
+          </div>
+        </a>
+        <div class="nav-right" id="header-nav"></div>
+      </div>
+    </header>
+
+    <main class="main-content container" style="padding-top: 40px; padding-bottom: 60px;">
+
+      <!-- ACTIVE REQUEST BLOCK (shown when patient already has a waiting entry) -->
+      <div id="active-request-section" class="hidden" style="max-width: 700px; margin: 0 auto;">
+        <div style="margin-bottom: 24px;">
+          <span class="badge badge-info" style="margin-bottom: 12px;">Active Request</span>
+          <h1 style="font-size: 2.2rem; margin-bottom: 8px;">You already have a request in the queue</h1>
+          <p style="color: var(--text-muted);">Only one active request is allowed at a time. You can edit your symptoms below or wait until staff calls you.</p>
+        </div>
+
+        <div class="card-panel no-hover" style="margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+              <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em;">Ticket Number</div>
+              <div class="ticket-number large" id="active-ticket">---</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em;">Priority Score</div>
+              <div style="font-size: 1.5rem; font-weight: 800; font-family: var(--font-heading);" id="active-score">0</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;" id="active-symptoms"></div>
+        </div>
+
+        <div class="warning-banner" style="margin-bottom: 24px;">
+          <span class="warning-dot"></span>
+          <span><strong>Fair use policy:</strong> Editing your request recalculates your priority. Adding unrelated symptoms to move ahead in the queue is unfair to other patients and undermines the system.</span>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-outline" id="edit-request-btn">Edit My Request</button>
+          <a href="status.html" class="btn btn-primary">Track My Position</a>
+        </div>
+      </div>
+
+      <!-- STEP 1: CHECKIN FORM -->
+      <div id="checkin-section">
+        <div style="margin-bottom: 24px;">
+          <h1 style="font-size: 2.2rem; margin-bottom: 8px;" id="checkin-title">Symptom Check-in</h1>
+          <p style="color: var(--text-muted);" id="checkin-subtitle">Select everything that applies. Be thorough — it determines your priority.</p>
+        </div>
+
+        <form id="checkin-form">
+          <!-- Symptoms -->
+          <div class="card-panel no-hover" style="margin-bottom: 24px;">
+            <h2 style="font-size: 1.25rem; margin-bottom: 4px;">1. What are you experiencing?</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Select all applicable symptoms.</p>
+            
+            <div class="checkbox-grid" id="symptom-grid">
+              <label class="check-card"><input type="checkbox" name="symptoms" value="chestPain"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Chest pain</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="breathingDifficulty"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Difficulty breathing</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="severeBleeding"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Severe bleeding</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="highFever"><span class="symptom-indicator" style="background:var(--triage-emergency);"></span> High fever</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="severeAbdominalPain"><span class="symptom-indicator" style="background:var(--triage-emergency);"></span> Abdominal pain</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="suspectedFracture"><span class="symptom-indicator" style="background:var(--triage-emergency);"></span> Suspected fracture</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="persistentVomiting"><span class="symptom-indicator" style="background:var(--triage-emergency);"></span> Persistent vomiting</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="severeHeadache"><span class="symptom-indicator" style="background:var(--triage-urgent);"></span> Severe headache</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="soreThroat"><span class="symptom-indicator" style="background:var(--triage-routine);"></span> Sore throat</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="coldCough"><span class="symptom-indicator" style="background:var(--triage-routine);"></span> Cold / cough</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="minorCutsBruises"><span class="symptom-indicator" style="background:var(--triage-routine);"></span> Minor cuts</label>
+              <label class="check-card"><input type="checkbox" name="symptoms" value="fatigue"><span class="symptom-indicator" style="background:var(--triage-routine);"></span> Fatigue</label>
+            </div>
+          </div>
+
+          <!-- Severity + Duration -->
+          <div class="card-panel no-hover" style="margin-bottom: 24px;">
+            <h2 style="font-size: 1.25rem; margin-bottom: 16px;">2. How severe, and for how long?</h2>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <label class="form-label" style="margin:0;">Overall Pain / Severity</label>
+                <span id="severity-val" style="font-weight: 800; color: var(--primary);">5/10</span>
+              </div>
+              <input type="range" id="severity" min="1" max="10" value="5">
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">
+                <span>1 — Barely noticeable</span>
+                <span>10 — Unbearable</span>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0; margin-top: 24px;">
+              <label class="form-label" for="duration">Onset / Duration</label>
+              <select id="duration" class="form-select" required>
+                <option value="lt1h">Just started — under 1 hour ago</option>
+                <option value="1to6h">Recent — 1 to 6 hours ago</option>
+                <option value="6to24h">Ongoing — 6 to 24 hours ago</option>
+                <option value="gt24h">Long-standing — over 24 hours ago</option>
+              </select>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 0; margin-top: 24px;">
+              <label class="form-label" for="additional-info">Additional Notes (Optional)</label>
+              <textarea id="additional-info" class="form-input" placeholder="Any other details? Keywords like 'pain' or 'emergency' may slightly impact priority." rows="2"></textarea>
+            </div>
+          </div>
+
+          <!-- Vital Red Flags -->
+          <div class="card-panel no-hover" style="margin-bottom: 24px; padding: 24px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+              <span class="status-dot critical"></span>
+              <h2 style="font-size: 1.25rem; margin: 0; color: var(--triage-critical);">3. Urgent Red Flags</h2>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Check any that apply right now. Each adds +15 points to your priority score.</p>
+            
+            <div class="checkbox-grid">
+              <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="breathingDifficulty"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Difficulty breathing at rest</label>
+              <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="chestPain"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Chest pain or tightness</label>
+              <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="highFever"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> High fever</label>
+              <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="severeBleeding"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Uncontrolled bleeding</label>
+              <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="faintingDizziness"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Fainting or dizziness</label>
+              <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="rapidHeartbeat"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Rapid heartbeat</label>
+            </div>
+          </div>
+
+          <div id="checkin-msg" style="margin-bottom:15px;font-size:0.9rem;font-weight:600;color:var(--triage-critical);display:none;"></div>
+          
+          <button type="submit" class="btn btn-coral btn-lg" id="submit-btn" style="width: 100%;">
+            Calculate Priority and Check In
+          </button>
+        </form>
+      </div>
+
+      <!-- STEP 2: CONFIRMATION -->
+      <div id="confirmation-section" class="hidden" style="max-width: 600px; margin: 0 auto;">
+
+        <div style="text-align: center; margin-bottom: 32px;">
+          <div class="feature-icon green" style="margin: 0 auto 16px auto; width: 56px; height: 56px; font-size: 1.5rem; border-radius: 50%;">&#10003;</div>
+          <h1 style="font-size: 2.2rem; margin-bottom: 8px;">You're in the queue</h1>
+          <p style="color: var(--text-muted);">Your symptoms have been recorded and prioritised.</p>
+        </div>
+
+        <div class="card-panel no-hover" style="margin-bottom: 24px; text-align: center;">
+          <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Your Ticket</div>
+          <div class="ticket-number large" id="conf-ticket" style="font-size: 2rem; margin-bottom: 24px;">---</div>
+
+          <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Priority Score</div>
+          <div id="conf-total-score" style="font-size: 4rem; font-weight: 800; font-family: var(--font-heading); line-height: 1; margin-bottom: 24px; color: var(--primary);">0</div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; background: var(--bg-main); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: var(--text-muted);">Base weight</span>
+              <strong id="conf-base-score">—</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: var(--text-muted);">Severity mult.</span>
+              <strong>x<span id="conf-severity-factor">—</span></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: var(--text-muted);">Onset bonus</span>
+              <strong>+<span id="conf-duration-bonus">—</span></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: var(--text-muted);">Text analysis</span>
+              <strong style="color: var(--triage-emergency);">+<span id="conf-text-bonus">—</span></strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: var(--text-muted);">Red flags</span>
+              <strong style="color: var(--triage-critical);">+<span id="conf-vital-bonus">—</span></strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-panel no-hover" style="text-align: center;">
+          <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Queue Position</div>
+          <div style="font-size: 3rem; font-weight: 800; color: var(--text-dark); line-height: 1; margin-bottom: 8px;" id="conf-queue-pos">—</div>
+          <div style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px;" id="conf-queue-label">out of — waiting</div>
+          
+          <a href="status.html" class="btn btn-primary" style="width: 100%;">
+            Track Live Status
+          </a>
+        </div>
+        
+        <div class="info-banner" style="margin-top: 24px;">
+          <span class="info-dot"></span>
+          <span>Share your ticket number <strong id="conf-ticket-repeat">---</strong> with anyone who wants to check your position from the <a href="lookup.html" style="color: var(--primary); font-weight: 700;">Ticket Lookup</a> page.</span>
+        </div>
+      </div>
+
+    </main>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/triage.js"></script>
+  <script src="js/queue.js"></script>
+  <script src="js/page-checkin.js"></script>
+  <script>
+    // Styling for checkbox cards
+    document.querySelectorAll('.check-card input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        e.target.closest('.check-card').classList.toggle('checked', e.target.checked);
+      });
+    });
+  </script>
+</body>
+</html>
