@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Status | MedQueue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.jpg">
+</head>
+<body>
+
+  <div class="app-container">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand">
+          <img src="assets/logo.jpg" alt="MedQueue Logo" class="logo-icon-img">
+          <div class="brand-text">
+            <span class="brand-main">MedQueue</span>
+            <span class="brand-sub">Priority Triage System</span>
+          </div>
+        </a>
+        <div class="nav-right" id="header-nav"></div>
+      </div>
+    </header>
+
+    <main class="main-content container" style="padding-top: 40px; padding-bottom: 60px; max-width: 600px;">
+      
+      <div style="margin-bottom: 24px;">
+        <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Live Queue Status</h1>
+      </div>
+
+      <div class="card-panel no-hover" id="status-card" style="margin-bottom: 24px; text-align: center;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h2 style="font-size: 1.1rem; color: var(--text-muted); margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Your Position</h2>
+          <div class="queue-pill" style="font-weight: 700;">
+            <span class="pulse-dot"></span>
+            Live
+          </div>
+        </div>
+
+        <div id="status-content">
+          <div style="padding: 40px 0; color: var(--text-muted);">
+            <div style="width: 40px; height: 40px; border: 3px solid var(--border-light); border-top-color: var(--primary); border-radius: 50%; display: inline-block;" class="spin"></div>
+            <p style="margin-top: 16px;">Loading your status...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-banner">
+        <span class="info-dot"></span>
+        <span>This page auto-refreshes every 3 seconds and syncs instantly when staff calls the next patient. You can also share your ticket number for anyone to check from the <a href="lookup.html" style="color: var(--primary); font-weight: 600;">Ticket Lookup</a> page.</span>
+      </div>
+
+    </main>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/queue.js"></script>
+  <script src="js/page-status.js"></script>
+</body>
+</html>
