@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | MedQueue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.jpg">
+</head>
+<body>
+
+  <div class="app-container">
+    <header class="header">
+      <div class="container nav-container">
+        <a href="index.html" class="brand">
+          <img src="assets/logo.jpg" alt="MedQueue Logo" class="logo-icon-img">
+          <div class="brand-text">
+            <span class="brand-main">MedQueue</span>
+            <span class="brand-sub">Priority Triage System</span>
+          </div>
+        </a>
+        <div class="nav-right" id="header-nav"></div>
+      </div>
+    </header>
+
+    <main class="main-content container" style="padding-top: 40px; padding-bottom: 60px; max-width: 700px;">
+      
+      <div style="margin-bottom: 32px;">
+        <h1 style="font-size: 2.2rem; margin-bottom: 8px;">My Profile</h1>
+      </div>
+
+      <div class="card-panel no-hover" style="margin-bottom: 24px;">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profile-avatar">?</div>
+          <div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 4px;" id="profile-name">—</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;" id="profile-username">@—</p>
+            <span class="badge badge-info" id="profile-role">—</span>
+          </div>
+        </div>
+
+        <div class="profile-stats" id="profile-stats">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Staff-only: Access Code Section -->
+      <div id="access-code-section" class="hidden">
+        <div class="card-panel no-hover">
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Staff Access Code</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+            This code is required every time you sign in. Keep it private.
+          </p>
+          <div class="access-code-display">
+            <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em;">Your Access Code</div>
+            <div class="access-code-value" id="profile-access-code">------</div>
+          </div>
+          <div style="display: flex; gap: 12px; margin-top: 16px; justify-content: center;">
+            <button class="btn btn-outline btn-sm" id="regenerate-code-btn">Regenerate Code</button>
+          </div>
+          <div class="warning-banner" style="margin-top: 16px;">
+            <span class="warning-dot"></span>
+            <span>Regenerating will invalidate your current code. You will need the new code for all future logins.</span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <div id="site-footer"></div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/queue.js"></script>
+  <script src="js/page-profile.js"></script>
+</body>
+</html>
