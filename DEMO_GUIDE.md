@@ -45,38 +45,47 @@ The core of the project is the `js/triage.js` and `js/queue.js` modules, built e
 
 ## 3. Demo Presentation Flow (Step-by-Step Script)
 
-*Use this script when presenting to your instructor. It is designed to highlight the CS logic and thoughtful edge-case handling.*
+*Use this script when presenting to your instructor. It is divided among your 3 team members. It is written to be conversational, punchy, and easy to speak aloud.*
+
+### Introduction & Problem Statement
+> **Speaker 1:** "Good evening! Today we are presenting MedQueue, a smart triage and queue system for hospitals. 
+> "The problem we are solving is the danger of a standard 'first-come, first-served' queue. In an ER, seeing patients in the exact order they arrive can be fatal if a critical patient is stuck behind someone with a minor issue. 
+> "MedQueue solves this. Patients report their symptoms, and our system dynamically sorts them using a priority score. To meet Phase 1 rules, we built everything from scratch using just HTML, CSS, and Vanilla JavaScript—no backend frameworks."
 
 ### Step 1: The Landing Page & Authentication
-> **Speaker:** "Welcome to MedQueue. Our goal was to build a smart triage system using only Vanilla HTML, CSS, and JS. First, I'll demonstrate the role-based authentication. We have two distinct user flows: Patients and Staff."
+> **Speaker 1:** "First, I'll show our role-based login. We built two separate flows: Patients and Staff. This keeps data secure."
 - *Action:* Go to `signup.html`. Create a patient account. 
-> **Speaker:** "Notice how if I try to sign up as staff, the system generates a secure 6-character Access Code. For now, I'll log in as a Patient."
+> **Speaker 1:** "If I try to sign up as a staff member, it requires a secure Access Code. For this demo, I'll just log in as a Patient."
 
-### Step 2: Patient Check-in (Showcasing Duplicate Prevention & NLP)
-> **Speaker:** "As a patient, I'm presented with the check-in form. We built in strict logical constraints: a patient cannot spam the queue. If they already have an active request, the system blocks them from creating a new one."
-- *Action:* Fill out the form. Select 'Severe Headache', severity 8. 
+### Step 2: Patient Check-in (Duplicate Prevention, NLP, & Editing)
+> **Speaker 2:** "I'll take over to show the Patient Check-in. First, notice our strict logical checks. We don't want a panicked patient submitting the form five times. Our system actively checks their status. If they are already in the queue, it blocks them from submitting a new request until they are seen."
+- *Action:* Fill out the form slowly. Select 'Severe Headache', severity 8, and duration '< 1 hour'.
+> **Speaker 2:** "While filling this out, you can see we collect hard data. An issue that started an hour ago might be more dangerous than one that started a month ago, and our math reflects that."
 - *Action:* In the 'Additional Notes' section, type: *"I am in extreme pain and bleeding."*
-> **Speaker:** "We also built a lightweight keyword scanner. Since we can't use an AI backend yet, our JS scans this text for keywords like 'pain' and 'bleeding', which will algorithmically bump their score."
-- *Action:* Click Submit.
+> **Speaker 2:** "Because we can't use an AI backend yet, we wrote a lightweight keyword scanner in JavaScript. It reads this text for emergency words like 'pain' or 'bleeding' and automatically bumps their priority score."
+- *Action:* Click Submit. Once the status page loads, click the "Edit My Request" button.
+> **Speaker 2:** "If a patient makes a mistake or gets worse while waiting, they don't need a receptionist. They can click 'Edit Request'. This pulls them out, lets them update their symptoms, recalculates their score, and puts them right back in."
+- *Action:* Click Submit again.
 
 ### Step 3: Status Page & Wait Times
-> **Speaker:** "Here is the Status Page. The system generated a unique Ticket ID. You can see the math breakdown of the score, including the 'Text analysis' bonus we just triggered."
+> **Speaker 2:** "Here is the live Status Page. You can see the math behind their score, including the keyword bonus we just triggered."
 - *Action:* Point out the Estimated Wait Time and the Print Ticket button.
-> **Speaker:** "We calculate estimated wait times dynamically based on their exact queue position. We also added a CSS-optimized Print Ticket feature for physical clinics."
+> **Speaker 2:** "We calculate wait times dynamically based on their exact spot in the queue. We also added a Print Ticket button, and a Dark Mode toggle in the profile."
 
-### Step 4: The Profile & Dark Mode
-> **Speaker:** "If we navigate to the Profile, patients can see their complete Visit History. We also implemented a fully functional Dark Mode using CSS variables and local storage."
-- *Action:* Toggle Dark Mode on and off. 
+### Step 4: Staff Dashboard & Insertion Sort
+> **Speaker 3:** "Now, I'll log in as Staff to show the backend logic."
+- *Action:* Split your screen into two browser windows side-by-side. Put the Staff Dashboard on the left, and a new Patient Check-in form on the right.
+> **Speaker 3:** "This dashboard on the left pulls the live queue. We didn't just use a basic JavaScript sort function—we wrote a custom Insertion Sort algorithm. Watch what happens when a new patient arrives."
+- *Action:* On the right window, quickly submit a medium-priority patient (e.g., 'Cough', severity 5). Point to the left window as the new patient instantly pops into the exact middle of the queue.
+> **Speaker 3:** "Did you see that? Because our queue is always kept sorted, inserting this new patient just required our code to check backwards to find their exact spot. This makes it highly efficient, running in O(N) time instead of O(N squared). And if two patients have the exact same score, the one who arrived first wins the tie."
 
-### Step 5: Staff Dashboard & Insertion Sort
-> **Speaker:** "Now, I'll open a new tab and log in as a Staff member."
-- *Action:* Open a new tab, login as Staff. Go to Dashboard.
-> **Speaker:** "The Staff dashboard pulls the live queue. This queue isn't just sorted with a standard `.sort()`. We wrote a custom Insertion Sort algorithm. When a new patient arrives, it iterates backward and inserts them in O(n) time, enforcing a strict first-come-first-served tie-breaker if scores match."
+### Step 5: Emergency Override & Cross-Tab Sync (The "Wow" Factor)
+> **Speaker 3:** "But algorithms aren't perfect. If a doctor sees a patient rapidly getting worse, we built a manual 'Emergency Override'."
+- *Action:* Ensure you have the Staff Dashboard on the left, and that specific Patient's Status Page on the right window. Click the red "Mark Critical" button on the Staff Dashboard.
+> **Speaker 3:** "Clicking this boosts their score to 100. Our code instantly snaps them to the front of the line. Now watch the patient's screen on the right when I click 'Call Next Patient'."
+- *Action:* Click "Call Next Patient" on the Staff Dashboard. Point to the Patient window as it instantly changes to "Served!".
+> **Speaker 3:** "They are removed from the queue, and thanks to local storage sync, the Patient's own screen automatically updates to 'Served' without them ever touching their device."
 
-### Step 6: Emergency Override (The "Wow" Factor)
-> **Speaker:** "Finally, algorithms aren't perfect. If a staff member visually sees a patient deteriorating in the waiting room, we built an 'Emergency Override'."
-- *Action:* Click the red "Mark Critical" button on a patient.
-> **Speaker:** "Clicking this overrides their score to 100. Our Insertion Sort instantly snaps them to the front of the line. If I click 'Call Next Patient', they are removed from the waiting list, and if we look at the Patient's tab, their screen has automatically updated to 'Served' via cross-tab synchronization."
-
-### Conclusion
-> **Speaker:** "By combining mathematical weighted scoring, custom sorting algorithms, and rigorous edge-case handling, we've built a robust, professional Phase 1 foundation ready for a real backend."
+### Conclusion & Phase 2 Future Scope
+> **Speaker 1:** "To conclude, Phase 1 proves our mathematical scoring and O(N) sorting logic works perfectly in the browser. 
+> "For **Phase 2**, we will upgrade this to a full **MERN Stack**. We'll replace Local Storage with a real MongoDB database, swap our keyword scanner for a real AI like Gemini to read patient notes, and use WebSockets for instant dashboard updates. Thank you."
