@@ -34,23 +34,14 @@ function analyzeTextScore(text) {
   const keywords = ['pain', 'blood', 'emergency', 'severe', 'faint', 'crash', 'unconscious', 'bleeding'];
   
   keywords.forEach(word => {
-    if (lower.includes(word)) bonus += 2; // +2 per keyword, max cap handled later if needed
+    if (lower.includes(word)) bonus += 2;
   });
   
-  return Math.min(bonus, 10); // cap text bonus at 10
+  return Math.min(bonus, 10);
 }
 
 /**
  * Computes the triage score based on form data.
- * 
- * Formula terms explained:
- * 1. baseScore: Sum of the weights of all selected symptoms.
- * 2. severityFactor: Scales the symptom weight based on the patient's subjective pain/severity 
- *    rating (1-10 slider), converted to a multiplier from 1.1x to 2.0x.
- * 3. durationBonus: Rewards sudden onset (e.g. < 1 hr gets +10) because acute changes are 
- *    often more critical than chronic issues.
- * 4. vitalFlagBonus: Flat +15 per vital "red flag" selected (e.g. fainting, high fever), 
- *    because these are objective, immediate warning signs.
  */
 function computeTriageScore(formData) {
   let baseScore = 0;
@@ -60,7 +51,6 @@ function computeTriageScore(formData) {
     }
   });
 
-  // severitySlider is 1-10 -> factor range 1.1-2.0
   const severityFactor = 1 + (formData.severity / 10);
   
   const durationBonus = DURATION_BONUS[formData.duration] || 0;
@@ -71,7 +61,6 @@ function computeTriageScore(formData) {
 
   const total = (baseScore * severityFactor) + durationBonus + vitalFlagBonus + textBonus;
   
-  // Return rounded to 1 decimal place to avoid floating point weirdness in display
   return Math.round(total * 10) / 10;
 }
 

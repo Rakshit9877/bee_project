@@ -1,9 +1,5 @@
-// Authentication module using LocalStorage and SessionStorage
-// NOTE: Plaintext passwords are used ONLY for this Phase 1 demo.
-// Phase 2 will introduce a real Node.js/Express backend with hashed passwords and JWT.
-
 const Auth = {
-  // --- Data Access ---
+  // Data Access
   getUsers() {
     const usersJson = localStorage.getItem('triageapp_users');
     return usersJson ? JSON.parse(usersJson) : [];
@@ -13,7 +9,7 @@ const Auth = {
     localStorage.setItem('triageapp_users', JSON.stringify(users));
   },
 
-  // --- Auth Actions ---
+  // Auth Actions
   signup(userData) {
     const users = this.getUsers();
     
@@ -26,8 +22,8 @@ const Auth = {
       id: 'u_' + Date.now(),
       name: userData.name,
       username: userData.username,
-      password: userData.password, // DEMO ONLY
-      role: userData.role, // 'patient' or 'staff'
+      password: userData.password,
+      role: userData.role,
       accessCode: userData.role === 'staff' ? this.generateAccessCode() : null,
       createdAt: new Date().toISOString(),
       totalRequests: 0,  // patients: times checked in
@@ -75,7 +71,7 @@ const Auth = {
     return userJson ? JSON.parse(userJson) : null;
   },
 
-  // --- Route Guarding ---
+  // Route Guarding
   requireRole(requiredRole) {
     const user = this.getCurrentUser();
     if (!user) {
@@ -91,7 +87,7 @@ const Auth = {
     return user;
   },
 
-  // --- Profile Helpers ---
+  // Profile Helpers
   getFullUser(userId) {
     const users = this.getUsers();
     return users.find(u => u.id === userId) || null;
@@ -115,7 +111,7 @@ const Auth = {
     }
   },
 
-  // --- Access Code ---
+  // Access Code
   generateAccessCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I/O/1/0 to avoid confusion
     let code = '';

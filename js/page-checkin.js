@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Check for existing active request
+
   const existingEntry = Queue.hasActiveRequest(user.id);
   if (existingEntry) {
     showActiveRequest(existingEntry);
   }
 
-  // --- EDIT MODE ---
+
   let editingEntryId = null;
 
   document.getElementById('edit-request-btn').addEventListener('click', () => {
@@ -32,31 +32,31 @@ document.addEventListener('DOMContentLoaded', () => {
     activeSection.classList.add('hidden');
     checkinSection.classList.remove('hidden');
 
-    // Pre-fill form with current data
+
     if (existingEntry) {
       document.getElementById('checkin-title').textContent = 'Edit Your Request';
       document.getElementById('checkin-subtitle').textContent = 'Update your symptoms. Your priority score will be recalculated.';
       submitBtn.textContent = 'Update Request';
 
-      // Check existing symptoms
+
       existingEntry.symptoms.forEach(s => {
         const cb = document.querySelector(`input[name="symptoms"][value="${s}"]`);
         if (cb) { cb.checked = true; cb.closest('.check-card').classList.add('checked'); }
       });
 
-      // Set severity
+
       severitySlider.value = existingEntry.severity;
       severityVal.textContent = existingEntry.severity + '/10';
 
-      // Set duration
+
       document.getElementById('duration').value = existingEntry.duration;
 
-      // Set additional info
+
       if (existingEntry.additionalInfo) {
         document.getElementById('additional-info').value = existingEntry.additionalInfo;
       }
 
-      // Check vital flags
+
       if (existingEntry.vitalFlags) {
         existingEntry.vitalFlags.forEach(v => {
           const cb = document.querySelector(`input[name="vitalFlags"][value="${v}"]`);
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- SUBMIT FORM ---
+
   checkinForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -119,13 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
       let queue = Queue.loadQueue();
 
       if (editingEntryId) {
-        // UPDATE existing entry
+
         Queue.updateEntry(editingEntryId, formData, triageScore);
         queue = Queue.loadQueue();
         const updatedEntry = queue.find(p => p.id === editingEntryId);
         showConfirmation(updatedEntry, scoreBreakdown, queue);
       } else {
-        // NEW entry
+
         const ticket = Queue.generateTicket(queue);
         const patientEntry = {
           id:          'p_' + Date.now(),
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Queue.insertPatient(queue, patientEntry);
         Queue.saveQueue(queue);
 
-        // Increment patient's totalRequests
+
         Auth.incrementStat(user.id, 'totalRequests');
 
         showConfirmation(patientEntry, scoreBreakdown, queue);
@@ -159,11 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmEl.classList.remove('hidden');
     confirmEl.style.animation = 'fadeUp 0.5s cubic-bezier(0.4,0,0.2,1) both';
 
-    // Ticket
+
     document.getElementById('conf-ticket').textContent = entry.ticket || '—';
     document.getElementById('conf-ticket-repeat').textContent = entry.ticket || '—';
 
-    // Score breakdown
+
     document.getElementById('conf-total-score').textContent = scoreBreakdown.total;
     document.getElementById('conf-base-score').textContent  = scoreBreakdown.baseScore;
     document.getElementById('conf-severity-factor').textContent = scoreBreakdown.severityFactor;
@@ -171,13 +171,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('conf-text-bonus').textContent      = scoreBreakdown.textBonus;
     document.getElementById('conf-vital-bonus').textContent     = scoreBreakdown.vitalFlagBonus;
 
-    // Colour-code the score
+
     const scoreEl = document.getElementById('conf-total-score');
     if (scoreBreakdown.total >= 30)      scoreEl.style.color = 'var(--triage-critical)';
     else if (scoreBreakdown.total >= 15) scoreEl.style.color = 'var(--triage-emergency)';
     else                                 scoreEl.style.color = 'var(--triage-routine)';
 
-    // Position
+
     const position     = Queue.getPatientPosition(queue, entry.id);
     const totalWaiting = queue.filter(p => p.status === 'waiting').length;
     document.getElementById('conf-queue-pos').textContent   = `#${position}`;
