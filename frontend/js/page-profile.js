@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   UI.setupHeader();
   document.getElementById('site-footer').innerHTML = UI.getFooterHTML();
 
@@ -8,7 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  const fullUser = Auth.getFullUser(user.id);
+  let fullUser;
+  let queue;
+  try {
+    [fullUser, queue] = await Promise.all([Auth.getFullUser(), Queue.loadQueue()]);
+  } catch (error) {
+    UI.showToast(error.message, 'error');
+    return;
+  }
   if (!fullUser) {
     window.location.href = 'login.html';
     return;
@@ -31,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const statsContainer = document.getElementById('profile-stats');
 
   if (fullUser.role === 'patient') {
-    const requestCount = Queue.getRequestCount(user.id);
-    const activeReq = Queue.hasActiveRequest(user.id);
+    const requestCount = Queue.getRequestCount(queue, user.id);
+    const activeReq = queue.find(entry => entry.status === 'waiting') || null;
 
     statsContainer.innerHTML = `
       <div class="stat-card">
@@ -50,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     // Patient History
-    const queue = Queue.loadQueue();
     const history = queue.filter(p => p.patientId === user.id).sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt));
     if (history.length > 0) {
       const historyHtml = history.map(p => `
@@ -58,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div>
             <div style="font-weight:600; font-size:0.95rem;">${UI.formatDate(p.registeredAt)}</div>
             <div style="font-size:0.8rem; color:var(--text-muted);">${p.symptoms.map(s => UI.symptomLabel(s)).join(', ')}</div>
+            ${p.attachment && p.attachment.url ? `<div style="margin-top:2px;"><a href="${API.baseUrl}${p.attachment.url}" target="_blank" style="color:var(--primary); font-size:0.75rem; text-decoration:underline;">📎 ${UI.escapeHTML(p.attachment.originalname || 'Attached File')}</a></div>` : ''}
           </div>
           <div style="text-align:right;">
             <span class="badge ${p.status === 'served' ? 'badge-routine' : 'badge-urgent'}">${p.status}</span>
@@ -92,14 +99,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show access code section
     const codeSection = document.getElementById('access-code-section');
     codeSection.classList.remove('hidden');
-    document.getElementById('profile-access-code').textContent = fullUser.accessCode || '------';
+    document.getElementById('profile-access-code').textContent = 'Hidden for security';
 
     // Regenerate button
-    document.getElementById('regenerate-code-btn').addEventListener('click', () => {
+    document.getElementById('regenerate-code-btn').addEventListener('click', async () => {
       if (confirm('Are you sure? Your current code will stop working immediately.')) {
-        const newCode = Auth.regenerateAccessCode(user.id);
-        document.getElementById('profile-access-code').textContent = newCode;
-        UI.showToast('Access code regenerated. Save your new code.', 'warning');
+        try {
+          const newCode = await Auth.regenerateAccessCode();
+          document.getElementById('profile-access-code').textContent = newCode;
+          UI.showToast('Access code regenerated. Save your new code.', 'warning');
+        } catch (error) {
+          UI.showToast(error.message, 'error');
+        }
       }
     });
   }

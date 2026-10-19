@@ -31,6 +31,7 @@
       <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px; margin-bottom: 24px;">
         <div>
           <h1 style="font-size: 2.2rem; margin: 0;">Live Triage Queue</h1>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Powered by MongoDB Atlas & Weighted Scoring Engine</p>
         </div>
         
         <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
@@ -38,15 +39,29 @@
             <span class="pulse-dot"></span>
             Auto-refreshing
           </div>
-          <div class="queue-pill" style="background: var(--triage-routine-bg); border-color: rgba(56, 142, 60, 0.2);">
-            Waiting: <strong id="count-waiting">0</strong>
-          </div>
-          <div class="queue-pill" style="background: var(--bg-card);">
-            Served: <strong id="count-served">0</strong>
-          </div>
           <button id="call-next-btn" class="btn btn-coral">
             Call Next Patient
           </button>
+        </div>
+      </div>
+
+      <!-- Live Analytics Bar -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="stat-card" style="padding: 16px; text-align: left;">
+          <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700;">Waiting Patients</div>
+          <div id="count-waiting" style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">0</div>
+        </div>
+        <div class="stat-card" style="padding: 16px; text-align: left;">
+          <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700;">Total Served</div>
+          <div id="count-served" style="font-size: 1.8rem; font-weight: 800; color: var(--triage-routine);">0</div>
+        </div>
+        <div class="stat-card" style="padding: 16px; text-align: left;">
+          <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700;">Critical Cases</div>
+          <div id="count-critical" style="font-size: 1.8rem; font-weight: 800; color: var(--triage-critical);">0</div>
+        </div>
+        <div class="stat-card" style="padding: 16px; text-align: left;">
+          <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700;">Avg Triage Score</div>
+          <div id="avg-score" style="font-size: 1.8rem; font-weight: 800; color: var(--text-dark);">0.0</div>
         </div>
       </div>
 

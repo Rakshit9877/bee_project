@@ -57,6 +57,7 @@
 
         <div style="display: flex; gap: 12px;">
           <button class="btn btn-outline" id="edit-request-btn">Edit My Request</button>
+          <button class="btn btn-secondary" id="cancel-request-btn">Cancel Check-in</button>
           <a href="status.html" class="btn btn-primary">Track My Position</a>
         </div>
       </div>
@@ -118,7 +119,7 @@
             
             <div class="form-group" style="margin-bottom: 0; margin-top: 24px;">
               <label class="form-label" for="additional-info">Additional Notes (Optional)</label>
-              <textarea id="additional-info" class="form-input" placeholder="Any other details? Keywords like 'pain' or 'emergency' may slightly impact priority." rows="2"></textarea>
+              <textarea id="additional-info" class="form-input" maxlength="1000" placeholder="Any other details? Keywords like 'pain' or 'emergency' may slightly impact priority." rows="2"></textarea>
             </div>
           </div>
 
@@ -137,6 +138,20 @@
               <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="severeBleeding"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Uncontrolled bleeding</label>
               <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="faintingDizziness"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Fainting or dizziness</label>
               <label class="check-card" style="border-color:rgba(229, 57, 53, 0.3);"><input type="checkbox" name="vitalFlags" value="rapidHeartbeat"><span class="symptom-indicator" style="background:var(--triage-critical);"></span> Rapid heartbeat</label>
+            </div>
+          </div>
+
+          <!-- Medical Document Upload (Multer) -->
+          <div class="card-panel no-hover" style="margin-bottom: 24px; padding: 24px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+              <span class="status-dot routine"></span>
+              <h2 style="font-size: 1.25rem; margin: 0;">4. Medical Attachment (Optional)</h2>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+              Upload prescription, lab report, or doctor's note (PDF, PNG, JPG, max 5MB). Handled on backend via Multer.
+            </p>
+            <div class="form-group" style="margin-bottom: 0;">
+              <input type="file" id="attachment" name="attachment" class="form-input" accept=".pdf,image/png,image/jpeg,image/webp">
             </div>
           </div>
 

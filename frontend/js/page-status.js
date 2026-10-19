@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   UI.setupHeader();
   document.getElementById('site-footer').innerHTML = UI.getFooterHTML();
   const user = Auth.requireRole('patient');
@@ -8,8 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let pollInterval;
   let lastStatus = null;
 
-  function renderStatus() {
-    const queue = Queue.loadQueue();
+  let rendering = false;
+  async function renderStatus() {
+    if (rendering) return;
+    rendering = true;
+    try {
+    const queue = await Queue.loadQueue();
 
     // Find latest entry for this patient
     const patientEntries = queue
@@ -46,21 +50,24 @@ document.addEventListener('DOMContentLoaded', () => {
           <a href="checkin.html" class="btn btn-secondary btn-sm">Start New Check-in</a>
         </div>`;
     } else {
-      const position     = Queue.getPatientPosition(queue, entry.id);
-      const totalWaiting = queue.filter(p => p.status === 'waiting').length;
+      const position     = entry.queuePosition;
+      const totalWaiting = entry.totalWaiting;
 
       let scoreColor = 'var(--triage-routine)';
       if (entry.triageScore >= 30)      scoreColor = 'var(--triage-critical)';
       else if (entry.triageScore >= 15) scoreColor = 'var(--triage-emergency)';
 
       const estWaitTime = position * 10; // Simple estimation: 10 mins per person ahead
-      const infoHtml = entry.additionalInfo ? `<div style="margin-top:16px; padding:12px; background:var(--bg-main); border-radius:var(--radius-sm); font-size:0.85rem; color:var(--text-muted); font-style:italic;"><strong>Additional Notes:</strong> "${entry.additionalInfo}"</div>` : '';
+      const infoHtml = entry.additionalInfo ? `<div style="margin-top:16px; padding:12px; background:var(--bg-main); border-radius:var(--radius-sm); font-size:0.85rem; color:var(--text-muted); font-style:italic;"><strong>Additional Notes:</strong> "${UI.escapeHTML(entry.additionalInfo)}"</div>` : '';
+      const attachHtml = (entry.attachment && entry.attachment.url)
+        ? `<div style="margin-top:12px; padding:10px; background:var(--bg-main); border-radius:var(--radius-sm); font-size:0.85rem;"><a href="${API.baseUrl}${entry.attachment.url}" target="_blank" class="badge badge-routine" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600;">📎 ${UI.escapeHTML(entry.attachment.originalname || 'View Attached Medical Document')}</a></div>`
+        : '';
 
       statusContent.innerHTML = `
         <div id="printable-ticket">
           <div style="margin-bottom: 20px;">
             <div style="font-size: 0.78rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em;">Ticket</div>
-            <div class="ticket-number large">${entry.ticket || '—'}</div>
+            <div class="ticket-number large">${UI.escapeHTML(entry.ticket || '—')}</div>
           </div>
 
           <div style="padding: 20px 0;">
@@ -86,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
           ${infoHtml}
+          ${attachHtml}
         </div>
         <button id="print-btn" class="btn btn-outline" style="width:100%; margin-top: 16px;">Print Ticket</button>
       `;
@@ -94,14 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
         window.print();
       });
     }
+    } catch (error) {
+      UI.showToast(error.message, 'error');
+    } finally {
+      rendering = false;
+    }
   }
 
   renderStatus();
   pollInterval = setInterval(renderStatus, 3000);
-
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'triageapp_queue') renderStatus();
-  });
 
   window.addEventListener('beforeunload', () => clearInterval(pollInterval));
 });

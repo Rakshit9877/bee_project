@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MedQueue | Smart Triage Priority Queue</title>
-  <meta name="description" content="An algorithmic front-desk priority queue that uses weighted scoring and insertion sort to order patients by self-reported symptom urgency.">
+  <meta name="description" content="An educational priority queue demonstration built with Express, Node.js, and SQLite.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@
           </h1>
 
           <p style="font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; margin: 0 auto 40px auto; max-width: 600px;">
-            A front-desk check-in tool that uses a weighted scoring algorithm and a hand-crafted insertion sort to place the most urgent patients first — fairly and transparently.
+            An educational check-in demonstration with server-calculated priority scoring and persistent queue data.
           </p>
 
           <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;" id="cta-row">
@@ -57,17 +57,17 @@
           <div class="card-panel">
             <div class="feature-icon purple">W</div>
             <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Weighted Scoring</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted);">Each symptom carries a clinical weight. Severity slider, duration, and red flags all feed into a single triage score.</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Sample symptom weights, self-reported severity, duration, and flags produce a demonstration score.</p>
           </div>
           <div class="card-panel">
             <div class="feature-icon coral">S</div>
-            <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Insertion Sort Queue</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted);">A hand-written insertion sort keeps the queue ordered in O(n) time on each new arrival, with first-come-first-served tie-breaking.</p>
+            <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Priority Queue</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">The API orders waiting entries by priority score, with first-come-first-served tie-breaking.</p>
           </div>
           <div class="card-panel">
             <div class="feature-icon green">L</div>
             <h3 style="font-size: 1.25rem; margin-bottom: 8px;">Live Dashboard</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted);">The staff view auto-refreshes every 3 seconds and listens for cross-tab storage events to stay in sync.</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">The staff view refreshes from the Express API every 3 seconds to stay up to date.</p>
           </div>
         </div>
       </section>
@@ -88,7 +88,7 @@
           <div class="card-panel" style="text-align: center;">
             <div class="feature-icon purple" style="margin: 0 auto 16px auto;">2</div>
             <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Get Your Score</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">The algorithm computes a priority score and inserts you into the sorted queue. You receive a ticket number.</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">The API calculates a sample priority score, saves your check-in, and returns a ticket number.</p>
           </div>
           <div class="card-panel" style="text-align: center;">
             <div class="feature-icon green" style="margin: 0 auto 16px auto;">3</div>

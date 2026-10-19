@@ -46,11 +46,10 @@
             <input type="password" id="password" class="form-input" placeholder="Enter your password" autocomplete="current-password" required>
           </div>
 
-          <!-- Access code field for staff accounts -->
           <div class="form-group" id="access-code-group" style="display:none;">
             <label class="form-label" for="access-code">Staff Access Code</label>
-            <input type="text" id="access-code" class="form-input" placeholder="6-character access code" maxlength="6" style="text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700;">
-            <p class="form-hint">Staff accounts require the access code provided during registration.</p>
+            <input type="text" id="access-code" class="form-input" placeholder="8-character code (staff only)" maxlength="8" style="text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700;">
+            <p class="form-hint">Required for staff accounts; patients can leave this blank.</p>
           </div>
 
           <div id="login-msg" style="margin-bottom:15px;font-size:0.9rem;font-weight:600;display:none;"></div>

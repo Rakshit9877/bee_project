@@ -5,13 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('lookup-form');
   const resultDiv = document.getElementById('lookup-result');
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const ticketInput = document.getElementById('ticket-input').value.trim().toUpperCase();
     if (!ticketInput) return;
 
-    const entry = Queue.getEntryByTicket(ticketInput);
+    let entry;
+    try {
+      entry = await Queue.getEntryByTicket(ticketInput);
+    } catch (error) {
+      UI.showToast(error.message, 'error');
+      return;
+    }
     resultDiv.classList.remove('hidden');
 
     if (!entry) {
@@ -19,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card-panel no-hover" style="text-align: center;">
           <div class="feature-icon coral" style="margin: 0 auto 16px auto; width: 56px; height: 56px; font-size: 1.5rem; border-radius: 50%;">X</div>
           <h3 style="font-size: 1.3rem; margin-bottom: 8px;">Ticket Not Found</h3>
-          <p style="color: var(--text-muted);">No entry matches <strong>${ticketInput}</strong>. Please check the number and try again.</p>
+          <p style="color: var(--text-muted);">No entry matches <strong>${UI.escapeHTML(ticketInput)}</strong>. Please check the number and try again.</p>
         </div>`;
       return;
     }
@@ -29,14 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="card-panel no-hover" style="text-align: center;">
           <div class="feature-icon green" style="margin: 0 auto 16px auto; width: 56px; height: 56px; font-size: 1.5rem; border-radius: 50%;">&#10003;</div>
           <h3 style="font-size: 1.3rem; margin-bottom: 8px;">Already Called</h3>
-          <p style="color: var(--text-muted);">Ticket <strong class="ticket-number">${entry.ticket}</strong> for <strong>${entry.patientName}</strong> has already been called. The patient should proceed to the desk.</p>
+          <p style="color: var(--text-muted);">Ticket <strong class="ticket-number">${UI.escapeHTML(entry.ticket)}</strong> for <strong>${UI.escapeHTML(entry.patientName)}</strong> has already been called. The patient should proceed to the desk.</p>
         </div>`;
       return;
     }
 
-    const queue = Queue.loadQueue();
-    const position = Queue.getPatientPosition(queue, entry.id);
-    const totalWaiting = queue.filter(p => p.status === 'waiting').length;
+    const position = entry.queuePosition;
+    const totalWaiting = entry.totalWaiting;
 
     let scoreColor = 'var(--triage-routine)';
     if (entry.triageScore >= 30)      scoreColor = 'var(--triage-critical)';
@@ -57,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="stat-label">Priority Score</div>
           </div>
           <div class="stat-card">
-            <div style="font-weight: 700; color: var(--text-dark);">${entry.patientName}</div>
+            <div style="font-weight: 700; color: var(--text-dark);">${UI.escapeHTML(entry.patientName)}</div>
             <div class="stat-label">Patient</div>
           </div>
         </div>

@@ -43,17 +43,17 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="username">Username</label>
-            <input type="text" id="username" class="form-input" placeholder="Choose a username" autocomplete="username" required>
+            <input type="text" id="username" class="form-input" placeholder="Choose a username" autocomplete="username" required minlength="3" maxlength="30" pattern="[A-Za-z0-9_.\-]+">
           </div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div class="form-group">
               <label class="form-label" for="password">Password</label>
-              <input type="password" id="password" class="form-input" placeholder="Min. 6 characters" required minlength="6">
+              <input type="password" id="password" class="form-input" placeholder="Min. 8 characters" required minlength="8" maxlength="128">
             </div>
             <div class="form-group">
               <label class="form-label" for="confirm-password">Confirm Password</label>
-              <input type="password" id="confirm-password" class="form-input" placeholder="Repeat password" required minlength="6">
+              <input type="password" id="confirm-password" class="form-input" placeholder="Repeat password" required minlength="8" maxlength="128">
             </div>
           </div>
 
@@ -75,6 +75,12 @@
             </div>
           </div>
 
+          <div class="form-group hidden" id="staff-invite-group">
+            <label class="form-label" for="staff-invite-code">Staff Invitation Code</label>
+            <input type="password" id="staff-invite-code" class="form-input" autocomplete="off" placeholder="Enter the invitation code provided by your administrator">
+            <p class="form-hint">Staff accounts can only be created with an invitation code.</p>
+          </div>
+
           <div id="signup-msg" style="margin-bottom:10px;font-size:0.9rem;font-weight:600;display:none;"></div>
 
           <button type="submit" class="btn btn-primary" id="signup-btn" style="width: 100%; margin-top: 10px;">Create Account</button>
@@ -90,7 +96,7 @@
             </p>
             <div class="access-code-display">
               <div style="font-size: 0.8rem; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em;">Your Staff Access Code</div>
-              <div class="access-code-value" id="modal-access-code">------</div>
+              <div class="access-code-value" id="modal-access-code">--------</div>
             </div>
             <div class="warning-banner" style="margin-top: 20px;">
               <span class="warning-dot"></span>
