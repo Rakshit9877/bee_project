@@ -1,5 +1,9 @@
-newpro/
-generate_team_history.sh
+node_modules/
+.env
 .DS_Store
 __pycache__/
 *.pyc
+data/
+backend/uploads/*
+!backend/uploads/.gitkeep
+npm-debug.log*
