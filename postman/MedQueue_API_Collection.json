@@ -1,0 +1,297 @@
+{
+  "info": {
+    "name": "MedQueue API Collection",
+    "description": "Comprehensive Postman test collection for MedQueue Hospital Triage Priority Queue system (MVC Architecture, MongoDB Atlas, JWT Auth, Multer uploads).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "patientToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "staffToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ticketNumber",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "entryId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        }
+      }
+    },
+    {
+      "name": "2. Auth - Patient Signup",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.token) {",
+              "    pm.collectionVariables.set('patientToken', jsonData.token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jane Doe\",\n  \"username\": \"janedoe\",\n  \"password\": \"patientpass123\",\n  \"role\": \"patient\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/signup",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "signup"]
+        }
+      }
+    },
+    {
+      "name": "3. Auth - Patient Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.token) {",
+              "    pm.collectionVariables.set('patientToken', jsonData.token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"janedoe\",\n  \"password\": \"patientpass123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "4. Auth - Staff Signup",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Dr. Sarah Connor\",\n  \"username\": \"drsarah\",\n  \"password\": \"staffpass123\",\n  \"role\": \"staff\",\n  \"staffInviteCode\": \"MEDSTAFF2026\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/signup",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "signup"]
+        }
+      }
+    },
+    {
+      "name": "5. Auth - Staff Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.token) {",
+              "    pm.collectionVariables.set('staffToken', jsonData.token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"drsarah\",\n  \"password\": \"staffpass123\",\n  \"accessCode\": \"ENTER_YOUR_STAFF_CODE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "6. Users - Get Current Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{patientToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users", "me"]
+        }
+      }
+    },
+    {
+      "name": "7. Users - Update Profile Name",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{patientToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Jane M. Doe\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/users/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "users", "me"]
+        }
+      }
+    },
+    {
+      "name": "8. Queue - Create Check-in (Patient)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.entry) {",
+              "    pm.collectionVariables.set('ticketNumber', jsonData.entry.ticket);",
+              "    pm.collectionVariables.set('entryId', jsonData.entry.id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{patientToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"symptoms\": [\"chestPain\", \"breathingDifficulty\"],\n  \"severity\": 9,\n  \"duration\": \"lt1h\",\n  \"additionalInfo\": \"Sharp chest pain radiating to left arm\",\n  \"vitalFlags\": [\"chestPain\", \"breathingDifficulty\"]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/queue",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "queue"]
+        }
+      }
+    },
+    {
+      "name": "9. Queue - Public Ticket Lookup",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/queue/ticket/{{ticketNumber}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "queue", "ticket", "{{ticketNumber}}"]
+        }
+      }
+    },
+    {
+      "name": "10. Queue - List Queue (Staff View)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{staffToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/queue",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "queue"]
+        }
+      }
+    },
+    {
+      "name": "11. Queue - Priority Override (Staff)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{staffToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/queue/{{entryId}}/priority",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "queue", "{{entryId}}", "priority"]
+        }
+      }
+    },
+    {
+      "name": "12. Queue - Call Next Patient (Staff)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{staffToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/queue/call-next",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "queue", "call-next"]
+        }
+      }
+    },
+    {
+      "name": "13. Analytics - Queue Aggregation Metrics (Staff)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{staffToken}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/analytics",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "analytics"]
+        }
+      }
+    }
+  ]
+}
