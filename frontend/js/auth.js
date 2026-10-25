@@ -1,7 +1,16 @@
 const API = {
-  baseUrl: window.MEDQUEUE_API_URL 
-    || localStorage.getItem('medqueue_api_url') 
-    || (window.location.protocol === 'file:' ? 'http://localhost:5001' : ''),
+  // Live deployed Render backend URL
+  backendUrl: 'https://medqueue-backend-9j6q.onrender.com',
+
+  get baseUrl() {
+    if (window.location.protocol === 'file:') return 'http://localhost:5001';
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.origin.includes('onrender.com')) {
+      return '';
+    }
+    return window.MEDQUEUE_API_URL 
+      || localStorage.getItem('medqueue_api_url') 
+      || this.backendUrl;
+  },
 
   async request(path, options = {}) {
     const token = sessionStorage.getItem('triageapp_token');

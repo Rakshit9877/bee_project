@@ -7,7 +7,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:5001",
+      "value": "https://medqueue-backend-9j6q.onrender.com",
       "type": "string"
     },
     {

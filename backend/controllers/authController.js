@@ -18,8 +18,8 @@ const signup = async (req, res, next) => {
     if (!name || name.trim().length < 2 || name.trim().length > 100) {
       return res.status(400).json({ error: 'Name must be between 2 and 100 characters.' });
     }
-    if (!username || !/^[a-zA-Z0-9_.-]{3,30}$/.test(username.trim())) {
-      return res.status(400).json({ error: 'Username must be 3-30 characters (letters, numbers, dots, dashes, underscores).' });
+    if (!username || !/^[a-zA-Z0-9_.\-@]{3,50}$/.test(username.trim())) {
+      return res.status(400).json({ error: 'Username must be 3-50 characters (letters, numbers, @, dots, dashes, underscores).' });
     }
     if (!password || password.length < 6 || password.length > 128) {
       return res.status(400).json({ error: 'Password must be between 6 and 128 characters.' });

@@ -7,3 +7,13 @@ data/
 backend/uploads/*
 !backend/uploads/.gitkeep
 npm-debug.log*
+
+# Internal presentation & team preparation files (kept locally only)
+PRESENTATION_SCRIPT.md
+LIVE_DEMO_INSTRUCTIONS.md
+SYLLABUS_CONCEPTS_AND_CODE_KEYWORDS.md
+DEMO_GUIDE.md
+project_deep_dive.md
+generate_team_history.sh
+*.pptx
+screenshots/Screenshot 2026-10-26*
