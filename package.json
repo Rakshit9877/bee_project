@@ -1,0 +1,23 @@
+{
+  "name": "medqueue",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MedQueue full-stack triage queue application",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+"dev": "node --env-file=.env --watch server/index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

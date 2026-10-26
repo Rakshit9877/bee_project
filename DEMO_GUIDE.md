@@ -3,10 +3,10 @@
 ## 1. Project Overview & Technical Understanding
 
 **What is MedQueue?**
-MedQueue is a front-desk triage and priority queue system designed for clinics and emergency rooms. Instead of a traditional "first-come, first-served" approach which can be fatal in medical settings, MedQueue implements an intelligent algorithmic approach to patient check-ins. Patients self-report their symptoms, severity, and duration, and the system automatically assigns them a priority score, ensuring that critical patients are seen immediately.
+MedQueue is an educational front-desk triage and priority queue system. Patients self-report symptoms, severity, and duration, and the server calculates a priority score to organize a demonstration queue. It is not a clinical decision-making tool.
 
 **How the Priority System Works (Technical CS Overview)**
-The core of the project is the `js/triage.js` and `js/queue.js` modules, built entirely in Vanilla JavaScript without backend frameworks, satisfying Phase 1 constraints. 
+The browser interface uses vanilla JavaScript and calls the Node.js/Express API. Queue entries and accounts are stored in SQLite by the backend.
 
 1. **Weighted Scoring (`triage.js`)**: 
    - Each symptom has a base weight (e.g., Chest Pain = 9, Fatigue = 1).
@@ -15,21 +15,18 @@ The core of the project is the `js/triage.js` and `js/queue.js` modules, built e
    - **Vital Red Flags** (like fainting or severe bleeding) add a flat +15 points each.
    - **NLP Text Analysis**: A custom script scans the "Additional Notes" field for emergency keywords (*pain, blood, crash*) and adds a +2 bonus per keyword.
 
-2. **Insertion Sort Algorithm (`queue.js`)**:
-   - The queue is maintained as a continuously sorted array in the browser's `localStorage`.
-   - When a new patient is added, the system does not run a full `O(N log N)` sort on the entire queue. Instead, it uses an **Insertion Sort** approach (`O(N)` worst-case), iterating backwards from the end of the queue.
-   - It shifts patients down until it finds the exact mathematical position where the new patient belongs.
-   - **Tie-Breaking Rule**: If two patients have the exact same priority score, the algorithm checks their `registeredAt` timestamp. The patient who arrived earlier wins the tie, ensuring absolute fairness.
+2. **Server-side Queue Ordering**:
+   - Queue entries persist in SQLite and the API returns waiting patients ordered by descending score.
+   - Arrival time breaks ties so earlier check-ins are listed first.
 
 ---
 
 ## 2. Complete Feature List
 
 ### Core Systems
-- **Authentication System**: Patient and Staff roles. Staff require a secret 6-character Access Code to register/login.
-- **State Management**: Uses `localStorage` and `sessionStorage` to mock a backend database perfectly.
-- **Dynamic Queueing**: O(n) Insertion Sort for managing waiting patients.
-- **Cross-Tab Synchronization**: Data syncs instantly across tabs. If a staff member marks a patient as served, the patient's screen updates automatically without refreshing.
+- **Authentication System**: Patient and Staff roles, hashed passwords, expiring signed login tokens, and staff access codes. Staff registration requires an administrator-configured invitation code.
+- **State Management**: Accounts and queue entries persist in SQLite; authenticated API routes enforce patient ownership and staff-only actions.
+- **Live Dashboard**: The staff dashboard polls the API for queue changes.
 
 ### Newly Added Polish & Features
 - **Dark Mode**: A fully functional theme toggle (light/dark) accessible from the Profile page, utilizing CSS variables.
@@ -38,7 +35,7 @@ The core of the project is the `js/triage.js` and `js/queue.js` modules, built e
 - **Print Ticket**: A dedicated button on the status page hooks into the browser's native `window.print()` to generate a clean, CSS-optimized physical receipt.
 - **Duplicate Prevention**: Logical checks prevent a patient from submitting a new check-in if they already have a "waiting" status in the queue.
 - **Staff Emergency Override**: A "Mark Critical" button on the staff dashboard bypasses the algorithm, assigning a score of 100 to instantly snap a deteriorating patient to the front of the line.
-- **Public Ticket Lookup**: A standalone page where family members can track a patient's position using their unique Ticket ID (e.g., `TKT-4892`) without signing in.
+- **Public Ticket Lookup**: A standalone page where visitors can track a patient's position using a ticket ID without seeing symptom details.
 - **Visit History**: A table on the patient profile displaying past check-ins, scores, and dates.
 
 ---
@@ -48,14 +45,14 @@ The core of the project is the `js/triage.js` and `js/queue.js` modules, built e
 *Use this script when presenting to your instructor. It is divided among your 3 team members. It is written to be conversational, punchy, and easy to speak aloud.*
 
 ### Introduction & Problem Statement
-> **Speaker 1:** "Good evening! Today we are presenting MedQueue, a smart triage and queue system for hospitals. 
-> "The problem we are solving is the danger of a standard 'first-come, first-served' queue. In an ER, seeing patients in the exact order they arrive can be fatal if a critical patient is stuck behind someone with a minor issue. 
-> "MedQueue solves this. Patients report their symptoms, and our system dynamically sorts them using a priority score. To meet Phase 1 rules, we built everything from scratch using just HTML, CSS, and Vanilla JavaScript—no backend frameworks."
+> **Speaker 1:** "Good evening! Today we are presenting MedQueue, an educational priority-queue project. 
+> "The project demonstrates priority-based ordering and a persistent backend, rather than a first-come, first-served list.
+> "Patients report their symptoms, and the Express API calculates a score and stores each check-in in SQLite. This is a software demonstration, not clinical decision support."
 
 ### Step 1: The Landing Page & Authentication
 > **Speaker 1:** "First, I'll show our role-based login. We built two separate flows: Patients and Staff. This keeps data secure."
 - *Action:* Go to `signup.html`. Create a patient account. 
-> **Speaker 1:** "If I try to sign up as a staff member, it requires a secure Access Code. For this demo, I'll just log in as a Patient."
+> **Speaker 1:** "Staff signup requires an administrator-configured invitation code. For this demo, I'll sign in as a Patient."
 
 ### Step 2: Patient Check-in (Duplicate Prevention, NLP, & Editing)
 > **Speaker 2:** "I'll take over to show the Patient Check-in. First, notice our strict logical checks. We don't want a panicked patient submitting the form five times. Our system actively checks their status. If they are already in the queue, it blocks them from submitting a new request until they are seen."
@@ -72,12 +69,12 @@ The core of the project is the `js/triage.js` and `js/queue.js` modules, built e
 - *Action:* Point out the Estimated Wait Time and the Print Ticket button.
 > **Speaker 2:** "We calculate wait times dynamically based on their exact spot in the queue. We also added a Print Ticket button, and a Dark Mode toggle in the profile."
 
-### Step 4: Staff Dashboard & Insertion Sort
+### Step 4: Staff Dashboard & API-backed Queue
 > **Speaker 3:** "Now, I'll log in as Staff to show the backend logic."
 - *Action:* Split your screen into two browser windows side-by-side. Put the Staff Dashboard on the left, and a new Patient Check-in form on the right.
-> **Speaker 3:** "This dashboard on the left pulls the live queue. We didn't just use a basic JavaScript sort function—we wrote a custom Insertion Sort algorithm. Watch what happens when a new patient arrives."
+> **Speaker 3:** "This dashboard on the left pulls the live queue from our Express API, which persists data in SQLite. Watch what happens when a new patient arrives."
 - *Action:* On the right window, quickly submit a medium-priority patient (e.g., 'Cough', severity 5). Point to the left window as the new patient instantly pops into the exact middle of the queue.
-> **Speaker 3:** "Did you see that? Because our queue is always kept sorted, inserting this new patient just required our code to check backwards to find their exact spot. This makes it highly efficient, running in O(N) time instead of O(N squared). And if two patients have the exact same score, the one who arrived first wins the tie."
+> **Speaker 3:** "The server orders patients by calculated priority, and if two have the same score, the one who arrived first wins the tie."
 
 ### Step 5: Emergency Override & Cross-Tab Sync (The "Wow" Factor)
 > **Speaker 3:** "But algorithms aren't perfect. If a doctor sees a patient rapidly getting worse, we built a manual 'Emergency Override'."
@@ -87,5 +84,5 @@ The core of the project is the `js/triage.js` and `js/queue.js` modules, built e
 > **Speaker 3:** "They are removed from the queue, and thanks to local storage sync, the Patient's own screen automatically updates to 'Served' without them ever touching their device."
 
 ### Conclusion & Phase 2 Future Scope
-> **Speaker 1:** "To conclude, Phase 1 proves our mathematical scoring and O(N) sorting logic works perfectly in the browser. 
+> **Speaker 1:** "To conclude, this project demonstrates server-side CRUD, role-based access control, persistent SQLite storage, and priority scoring."
 > "For **Phase 2**, we will upgrade this to a full **MERN Stack**. We'll replace Local Storage with a real MongoDB database, swap our keyword scanner for a real AI like Gemini to read patient notes, and use WebSockets for instant dashboard updates. Thank you."

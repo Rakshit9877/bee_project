@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   UI.setupHeader();
   document.getElementById('site-footer').innerHTML = UI.getFooterHTML();
   const user = Auth.requireRole('patient');
@@ -19,11 +19,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  const existingEntry = Queue.hasActiveRequest(user.id);
+  let existingEntry;
+  try {
+    existingEntry = await Queue.hasActiveRequest(user.id);
+  } catch (error) {
+    UI.showMessage('checkin-msg', error.message, 'error');
+    return;
+  }
   if (existingEntry) {
     showActiveRequest(existingEntry);
   }
 
+  document.getElementById('cancel-request-btn').addEventListener('click', async () => {
+    if (!existingEntry || !confirm('Cancel your active check-in? This cannot be undone.')) return;
+    try {
+      await Queue.deleteEntry(existingEntry.id);
+      window.location.reload();
+    } catch (error) {
+      UI.showMessage('checkin-msg', error.message, 'error');
+    }
+  });
 
   let editingEntryId = null;
 
@@ -85,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  checkinForm.addEventListener('submit', (e) => {
+  checkinForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const symptoms = Array.from(
@@ -115,44 +130,21 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.classList.add('loading');
     submitBtn.textContent = 'Processing...';
 
-    setTimeout(() => {
-      let queue = Queue.loadQueue();
-
-      if (editingEntryId) {
-
-        Queue.updateEntry(editingEntryId, formData, triageScore);
-        queue = Queue.loadQueue();
-        const updatedEntry = queue.find(p => p.id === editingEntryId);
-        showConfirmation(updatedEntry, scoreBreakdown, queue);
-      } else {
-
-        const ticket = Queue.generateTicket(queue);
-        const patientEntry = {
-          id:          'p_' + Date.now(),
-          patientId:   user.id,
-          patientName: user.name,
-          username:    user.username,
-          ...formData,
-          triageScore,
-          ticket,
-          registeredAt: new Date().toISOString(),
-          status: 'waiting',
-        };
-
-        Queue.insertPatient(queue, patientEntry);
-        Queue.saveQueue(queue);
-
-
-        Auth.incrementStat(user.id, 'totalRequests');
-
-        showConfirmation(patientEntry, scoreBreakdown, queue);
-      }
-
+    try {
+      const patientEntry = editingEntryId
+        ? await Queue.updateEntry(editingEntryId, formData)
+        : await Queue.createEntry(formData);
+      showConfirmation(patientEntry, scoreBreakdown);
       submitBtn.classList.remove('loading');
-    }, 600);
+      submitBtn.textContent = editingEntryId ? 'Update Request' : 'Submit Check-in';
+    } catch (error) {
+      submitBtn.classList.remove('loading');
+      submitBtn.textContent = editingEntryId ? 'Update Request' : 'Submit Check-in';
+      UI.showMessage('checkin-msg', error.message, 'error');
+    }
   });
 
-  function showConfirmation(entry, scoreBreakdown, queue) {
+  function showConfirmation(entry, scoreBreakdown) {
     checkinSection.classList.add('hidden');
     activeSection.classList.add('hidden');
     const confirmEl = document.getElementById('confirmation-section');
@@ -178,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
     else                                 scoreEl.style.color = 'var(--triage-routine)';
 
 
-    const position     = Queue.getPatientPosition(queue, entry.id);
-    const totalWaiting = queue.filter(p => p.status === 'waiting').length;
+    const position     = entry.queuePosition;
+    const totalWaiting = entry.totalWaiting;
     document.getElementById('conf-queue-pos').textContent   = `#${position}`;
     document.getElementById('conf-queue-label').textContent = `out of ${totalWaiting} waiting`;
   }

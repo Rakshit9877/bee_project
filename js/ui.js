@@ -26,13 +26,27 @@ const UI = {
 
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<span class="toast-dot ${type}"></span><span>${message}</span>`;
+    const dot = document.createElement('span');
+    dot.className = `toast-dot ${type}`;
+    const text = document.createElement('span');
+    text.textContent = message;
+    toast.append(dot, text);
     container.appendChild(toast);
 
     setTimeout(() => {
       toast.classList.add('out');
       setTimeout(() => toast.remove(), 300);
     }, 3500);
+  },
+
+  escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[character]);
   },
 
   // Format relative time
@@ -114,7 +128,7 @@ const UI = {
         <a href="${dest}" class="nav-link">${destLabel}</a>
         <a href="profile.html" class="nav-link">Profile</a>
         <span class="nav-link" style="color:var(--text-subtle);cursor:default;">
-          ${user.name}
+          ${this.escapeHTML(user.name)}
         </span>
         <button id="logout-btn" class="btn btn-secondary btn-sm" style="width:auto;">Log out</button>
       `;
@@ -140,7 +154,7 @@ const UI = {
               <span class="footer-brand-name">MedQueue</span>
             </div>
             <p class="footer-desc">
-              An algorithmic front-desk priority queue that orders patients by self-reported symptom urgency, using weighted scoring and hand-crafted insertion sort.
+              An educational queue application with server-side priority scoring and persistent storage.
             </p>
             <div class="footer-disclaimer">
               This tool is strictly non-diagnostic. It does not provide medical advice, diagnosis, or treatment. For emergencies, call your local emergency number immediately.
@@ -174,7 +188,7 @@ const UI = {
         </div>
         <div class="footer-bottom">
           <span>&copy; ${new Date().getFullYear()} MedQueue. Built for Backend Engineering (24CAI0303).</span>
-          <span>Phase 1 — Vanilla HTML / CSS / JavaScript</span>
+          <span>Node.js · Express · SQLite</span>
         </div>
       </div>
     </footer>`;

@@ -1,84 +1,54 @@
-# MedQueue: Priority Triage System
+# MedQueue
 
-MedQueue is a smart front-desk triage and priority queue system designed for clinics and emergency rooms. Built for the Back End Engineering course (24CAI0303) at Chitkara University.
+MedQueue is an educational full-stack triage queue application built with vanilla HTML/CSS/JavaScript, Node.js, Express, and SQLite.
 
-> **⚠️ IMPORTANT DISCLAIMER:** This tool is strictly **educational and non-diagnostic**. It does not provide medical advice, diagnosis, or treatment.
+> **Educational disclaimer:** This project is non-diagnostic and does not provide medical advice, diagnosis, or treatment. Do not use it to make real clinical decisions.
 
----
+## Requirements
 
-## 📸 Screenshots
+- Node.js 22.13 or newer
+- npm
 
-### 1. Landing Page
-![Landing Page](screenshots/landing_page.png)
-*A professional, responsive landing page introducing the smart triage system.*
+## Run locally
 
-### 2. Patient Check-In & Text Analysis
-![Check-in Page](screenshots/checkin_page.png)
-*Patients self-report symptoms, severity, and duration. Includes NLP text-analysis on the additional notes.*
+1. Copy `.env.example` to `.env` (PowerShell: `Copy-Item .env.example .env`; macOS/Linux: `cp .env.example .env`).
+2. Set `JWT_SECRET` to a random secret of at least 32 characters. Set a private `STAFF_INVITE_CODE`; it is required when creating a staff account.
+3. Install dependencies and start the app:
 
-### 3. Live Patient Status
-![Status Page](screenshots/status_page.png)
-*Patients can view their dynamically updating queue position, algorithmic score breakdown, and estimated wait time.*
-
-### 4. Staff Dashboard & Emergency Override
-![Staff Dashboard](screenshots/staff_dashboard.png)
-*Staff view a live, insertion-sorted queue. Includes a "Mark Critical" emergency override button.*
-
-### 5. Patient Profile & Dark Mode
-![Patient Profile](screenshots/patient_profile.png)
-*Patients can view their visit history. The entire application supports a toggleable Dark Mode.*
-
----
-
-## ⚙️ Technical Details (Phase 1)
-
-This repository houses **Phase 1** of the project, built strictly with **Vanilla HTML, CSS, and JavaScript**.
-
-- **State Management**: Data persistence is simulated using the browser's `localStorage` and `sessionStorage`. Cross-tab synchronization allows the patient's screen to update instantly when a staff member calls them.
-- **Core Algorithm (`js/triage.js`)**: Calculates a priority score (0-100) based on weighted variables (symptom severity, sudden onset bonus, vital red flags, and keyword analysis of patient notes).
-- **Queue Manager (`js/queue.js`)**: Maintains an ordered array using **Insertion Sort**. Since the queue is always sorted, inserting a single new patient via insertion sort is highly efficient `O(N)`. 
-- **Tie-Breaking Rule**: If two patients score exactly the same, the algorithm strictly places the earlier arrival first.
-
-## 🚀 Features
-- Role-based Authentication (Patient vs Staff Access Codes)
-- Algorithmic Priority Scoring & Text NLP Analysis
-- O(n) Insertion Sort Queue Management
-- Live Cross-Tab Synchronization
-- Duplicate Request Prevention
-- Dark Mode / Light Mode Toggle
-- Public Ticket Tracking (`lookup.html`)
-- Printable Tickets (`window.print()`)
-- Staff "Emergency Override" to manually bypass the algorithm
-
----
-
-## 💻 Installation & Setup
-
-To run this project on any new computer, follow these simple steps:
-
-### Prerequisites
-- You need **Python 3** installed to run a local web server (or any similar local server like `http-server` via Node.js).
-- A modern web browser (Chrome, Firefox, Safari).
-
-### Steps
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/Rakshit9877/bee_project.git
-   cd bee_project
+   ```sh
+   npm install
+   npm start
    ```
 
-2. **Start the Local Server**
-   Run the following command in the project root directory:
-   ```bash
-   python3 -m http.server 8080
-   ```
-   *(If you use Node.js, you can alternatively run `npx http-server -p 8080`)*
+4. Open <http://localhost:3000>.
 
-3. **Access the Application**
-   Open your browser and navigate to:
-   ```text
-   http://localhost:8080
-   ```
+SQLite data is stored in `data/medqueue.sqlite` by default. Set `DATABASE_PATH` to change its location. The database and environment file are excluded from Git.
 
-### Note on State
-Because this uses `localStorage`, all users and queue data will persist locally on your specific browser even if you stop the server. To reset the application, clear your browser's site data/local storage.
+For development with automatic server restarts, use `npm run dev`.
+
+## CRUD API
+
+All API responses use JSON. Authenticated routes require `Authorization: Bearer <token>`; login returns a 12-hour token. Patient accounts can only access their own queue entries. Staff-only operations are protected by role checks.
+
+| Method | Endpoint | Access | Purpose |
+| --- | --- | --- | --- |
+| `POST` | `/api/auth/signup` | Public | Create patient account; staff signup also requires `staffInviteCode` |
+| `POST` | `/api/auth/login` | Public | Authenticate and receive a token |
+| `GET` | `/api/auth/me` | Signed in | Read current account |
+| `GET`, `PATCH` | `/api/users/me` | Signed in | Read or update own profile name |
+| `POST` | `/api/users/me/access-code` | Staff | Rotate staff access code |
+| `GET` | `/api/queue` | Signed in | List queue (staff) or own history (patient) |
+| `GET` | `/api/queue/:id` | Signed in | Read one authorized queue entry |
+| `POST` | `/api/queue` | Patient | Create check-in |
+| `PUT` | `/api/queue/:id` | Owning patient | Update a waiting check-in |
+| `DELETE` | `/api/queue/:id` | Owner or staff | Cancel/delete a queue entry |
+| `PATCH` | `/api/queue/:id/priority` | Staff | Apply emergency priority override |
+| `POST` | `/api/queue/call-next` | Staff | Mark the highest-priority waiting entry served |
+| `GET` | `/api/queue/ticket/:ticket` | Public | Look up a ticket without exposing symptom details |
+| `GET` | `/api/health` | Public | Health check |
+
+The server validates check-in data and calculates the triage score itself; it does not trust a score supplied by the browser. Passwords and staff access codes are hashed. The staff invitation code is an administrative enrollment gate, not a substitute for real-world identity verification.
+
+## Screenshots
+
+See `screenshots/` for existing project UI examples.

@@ -23,8 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'badge-routine';
   }
 
-  function renderTable() {
-    const queue = Queue.loadQueue();
+  let rendering = false;
+  async function renderTable() {
+    if (rendering) return;
+    rendering = true;
+    try {
+    const queue = await Queue.loadQueue();
     const waiting = queue.filter(p => p.status === 'waiting');
     const served  = queue.filter(p => p.status === 'served');
 
@@ -47,15 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const flagHtml = (p.vitalFlags && p.vitalFlags.length > 0)
         ? `<div style="margin-top:4px;color:var(--triage-critical);font-weight:600;font-size:0.8rem;">${p.vitalFlags.map(v => UI.vitalLabel(v)).join(', ')}</div>`
         : '';
-      const infoHtml = p.additionalInfo ? `<div style="margin-top:4px;font-size:0.8rem;color:var(--text-subtle);font-style:italic;">"${p.additionalInfo}"</div>` : '';
+      const infoHtml = p.additionalInfo ? `<div style="margin-top:4px;font-size:0.8rem;color:var(--text-subtle);font-style:italic;">"${UI.escapeHTML(p.additionalInfo)}"</div>` : '';
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="font-weight:800;font-size:1.1rem;color:var(--text-muted);">${idx + 1}</td>
         <td><span class="ticket-number">${p.ticket || '—'}</span></td>
         <td>
-          <div style="font-weight:700;color:var(--text-dark);">${p.patientName}</div>
-          <div style="font-size:0.78rem;color:var(--text-subtle);">@${p.username}</div>
+          <div style="font-weight:700;color:var(--text-dark);">${UI.escapeHTML(p.patientName)}</div>
+          <div style="font-size:0.78rem;color:var(--text-subtle);">@${UI.escapeHTML(p.username)}</div>
         </td>
         <td><span class="badge ${badgeClass(p.triageScore)}">Score: ${p.triageScore.toFixed(1)}</span></td>
         <td style="color:var(--text-muted);">${durationLabels[p.duration] || p.duration}</td>
@@ -83,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.innerHTML = `
           <td><span class="ticket-number">${p.ticket || '—'}</span></td>
           <td>
-            <div style="font-weight:600;color:var(--text-muted);">${p.patientName}</div>
-            <div style="font-size:0.75rem;color:var(--text-subtle);">@${p.username}</div>
+            <div style="font-weight:600;color:var(--text-muted);">${UI.escapeHTML(p.patientName)}</div>
+            <div style="font-size:0.75rem;color:var(--text-subtle);">@${UI.escapeHTML(p.username)}</div>
           </td>
           <td><span class="badge badge-routine" style="opacity:0.7;">${p.triageScore.toFixed(1)}</span></td>
           <td style="font-size:0.8rem;color:var(--text-muted);">${p.symptoms.map(s => UI.symptomLabel(s)).join(', ')}</td>
@@ -98,41 +102,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Attach override handlers
     document.querySelectorAll('.override-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', async (e) => {
         const id = e.target.getAttribute('data-id');
         if (confirm("Are you sure you want to mark this patient as CRITICAL? This will bypass the algorithm and push them to the front of the queue.")) {
-          Queue.updateEntry(id, {}, 100.0);
-          UI.showToast('Patient marked as critical. Queue reordered.', 'warning');
-          renderTable();
+          try {
+            await Queue.updateEntry(id, {}, true);
+            UI.showToast('Patient marked as critical. Queue reordered.', 'warning');
+            await renderTable();
+          } catch (error) {
+            UI.showToast(error.message, 'error');
+          }
         }
       });
     });
+    } catch (error) {
+      UI.showToast(error.message, 'error');
+    } finally {
+      rendering = false;
+    }
   }
 
   // Call Next
-  document.getElementById('call-next-btn').addEventListener('click', () => {
-    let queue = Queue.loadQueue();
-    const waiting = queue.filter(p => p.status === 'waiting');
-    if (waiting.length === 0) {
-      UI.showToast('No patients waiting in the queue.', 'info');
-      return;
+  document.getElementById('call-next-btn').addEventListener('click', async () => {
+    try {
+      const next = await Queue.callNextPatient();
+      await renderTable();
+      UI.showToast(`Called ${next.patientName} (${next.ticket || ''}) — they have been notified.`, 'success');
+    } catch (error) {
+      UI.showToast(error.message, 'info');
     }
-    const next = waiting[0];
-    queue = Queue.callNextPatient(queue);
-    Queue.saveQueue(queue);
-
-    // Increment staff totalServed counter
-    Auth.incrementStat(user.id, 'totalServed');
-
-    renderTable();
-    UI.showToast(`Called ${next.patientName} (${next.ticket || ''}) — they have been notified.`, 'success');
   });
 
   renderTable();
 
-  const pollInterval = setInterval(renderTable, 3000);
-  window.addEventListener('storage', e => {
-    if (e.key === 'triageapp_queue') renderTable();
-  });
+  const pollInterval = setInterval(() => { renderTable(); }, 3000);
   window.addEventListener('beforeunload', () => clearInterval(pollInterval));
 });

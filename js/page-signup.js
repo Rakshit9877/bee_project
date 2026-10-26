@@ -11,15 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const form       = document.getElementById('signup-form');
   const signupBtn  = document.getElementById('signup-btn');
 
+  const staffInviteGroup = document.getElementById('staff-invite-group');
+
   // Role toggle styling
   document.querySelectorAll('input[name="role"]').forEach(radio => {
     radio.addEventListener('change', () => {
       document.querySelectorAll('.role-option').forEach(c => c.classList.remove('selected'));
       radio.closest('.role-option').classList.add('selected');
+      staffInviteGroup.classList.toggle('hidden', radio.value !== 'staff');
+      document.getElementById('staff-invite-code').required = radio.value === 'staff';
     });
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const name            = document.getElementById('name').value.trim();
@@ -37,9 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     signupBtn.classList.add('loading');
     signupBtn.textContent = 'Creating account...';
 
-    setTimeout(() => {
-      try {
-        const newUser = Auth.signup({ name, username, password, role });
+    try {
+        const staffInviteCode = document.getElementById('staff-invite-code').value.trim();
+        const newUser = await Auth.signup({ name, username, password, role, staffInviteCode });
 
         signupBtn.classList.remove('loading');
         signupBtn.textContent = 'Account created';
@@ -55,13 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           // Patient: redirect to login
           UI.showMessage('signup-msg', 'Account created. Redirecting to login...', 'success');
-          setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+          setTimeout(() => { window.location.href = 'login.html'; }, 1000);
         }
-      } catch (err) {
-        signupBtn.classList.remove('loading');
-        signupBtn.textContent = 'Create Account';
-        UI.showMessage('signup-msg', err.message, 'error');
-      }
-    }, 500);
+    } catch (err) {
+      signupBtn.classList.remove('loading');
+      signupBtn.textContent = 'Create Account';
+      UI.showMessage('signup-msg', err.message, 'error');
+    }
   });
 });

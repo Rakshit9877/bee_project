@@ -3,3 +3,7 @@ generate_team_history.sh
 .DS_Store
 __pycache__/
 *.pyc
+node_modules/
+.env
+data/
+npm-debug.log*
